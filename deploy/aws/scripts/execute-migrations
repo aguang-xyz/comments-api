@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+dotnet ef database update --project ../../src/CommentsApi.csproj --configuration ${APP_ENVIRONMENT}

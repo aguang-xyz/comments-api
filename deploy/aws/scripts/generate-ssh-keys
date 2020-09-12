@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+if [ ! -f ./keys/ec2 ]
+then
+  ssh-keygen -t rsa -P '' -f ./keys/ec2
+fi

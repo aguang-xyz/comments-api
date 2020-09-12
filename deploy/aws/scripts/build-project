@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+$(cat <<EOF > ../../src/appsettings.${APP_ENVIRONMENT}.json
+{
+  "DbContext": {
+    "Server": "${RDS_HOST}",
+    "Database": "${RDS_DATABASE}",
+    "Port": "${RDS_PORT}",
+    "User": "${RDS_USERNAME}",
+    "Password": "${RDS_PASSWORD}"
+  }
+}
+EOF
+)
+
+dotnet publish ../../src -c ${APP_ENVIRONMENT}
