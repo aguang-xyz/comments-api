@@ -174,7 +174,7 @@ resource "aws_instance" "ec2" {
       "sudo apt update",
       "sudo apt install -y dotnet-sdk-3.1 aspnetcore-runtime-3.1",
       "sudo chmod +x ~/comments-api/CommentsApi",
-      "ASPNETCORE_ENVIRONMENT=${var.app_environment} nohup ~/comments-api/CommentsApi > ~/comments-api.log &",
+      "cd ~/comments-api && (ASPNETCORE_ENVIRONMENT=${var.app_environment} nohup ~/comments-api/CommentsApi > ~/comments-api.log &)",
       "sleep 5"
     ]
   }
