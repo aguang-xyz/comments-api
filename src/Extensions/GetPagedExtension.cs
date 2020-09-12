@@ -11,7 +11,7 @@ namespace CommentsApi.Extensions
         {
             var total = query.Count();
             var pageCount = (int)Math.Ceiling((double)total / pageSize);
-            var entities = query.Skip((pageCount - 1) * pageSize).Take(pageSize).ToList();
+            var entities = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             return new PagedEntities<TEntity>
             {
