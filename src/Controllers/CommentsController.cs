@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using CommentsApi.Entities;
 using CommentsApi.Repositories;
+using CommentsApi.Services;
 
 namespace CommentsApi.Controllers
 {
@@ -11,24 +12,44 @@ namespace CommentsApi.Controllers
     {
         private ILogger<CommentsController> _logger;
 
-        private ICommentRepository _commentRepository;
+        private IUserService _userService;
 
-        public CommentsController(ILogger<CommentsController> logger, ICommentRepository commentRepository)
+        private ICommentService _commentService;
+
+        public CommentsController(ILogger<CommentsController> logger, IUserService userService, ICommentService commentService)
         {
             _logger = logger;
-            _commentRepository = commentRepository;
+            _userService = userService;
+            _commentService = commentService;
         }
 
         [HttpGet]
-        [Route("comments/{category}")]
-        public PagedEntities<Comment> GetComments(
-            string category,
-            [FromQuery(Name = "page")] int? page,
-            [FromQuery(Name = "pageSize")] int? pageSize)
+        [Route("comments")]
+        public PagedEntities<CommentResponse> GetComments(
+            [FromQuery] string category,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string order = "recent")
         {
             _logger.LogInformation($"Get comments, category = {category}, page = {page}, pageSize = {pageSize}");
 
-            return _commentRepository.GetPagedByCategory(category, page ?? 1, pageSize ?? 10);
+            return _commentService.GetPaged(category, page, pageSize, order);
+        }
+
+        [HttpPost]
+        [Route("comments")]
+        public IActionResult AddComment(AddCommentRequest request)
+        {
+            var user = _userService.Current;
+
+            if (user == null)
+            {
+                return Forbid();
+            }
+
+            _commentService.Add(user, request.Category, request.Content);
+
+            return Ok();
         }
     }
 }

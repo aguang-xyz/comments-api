@@ -11,9 +11,16 @@ namespace CommentsApi.Repositories
         {
         }
 
-        public PagedEntities<Comment> GetPagedByCategory(string category, int page, int pageSize) =>
+        public PagedEntities<Comment> GetPagedByCategoryOrderByCreatedAt(string category, int page, int pageSize) =>
+          this.Set
+            .Where(comment => comment.Category == category)
+            .OrderByDescending(comment => comment.CreatedAt)
+            .GetPaged(page, pageSize);
+
+        public PagedEntities<Comment> GetPagedByCategoryOrderByCountOfLikes(string category, int page, int pageSize) =>
             this.Set
               .Where(comment => comment.Category == category)
+              .OrderByDescending(comment => comment.CountOfLikes)
               .GetPaged(page, pageSize);
     }
 }

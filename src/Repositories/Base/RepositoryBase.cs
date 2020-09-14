@@ -26,7 +26,7 @@ namespace CommentsApi.Repositories
 
         public TEntity GetById(Guid id)
         {
-            return this.Set.Single(entity => entity.Id == id);
+            return this.Set.Where(entity => entity.Id == id).FirstOrDefault();
         }
 
         public void Insert(TEntity entity)
@@ -41,6 +41,19 @@ namespace CommentsApi.Repositories
 
         public void SaveChanges()
         {
+            var entries = _context.ChangeTracker
+              .Entries()
+              .Where(entry => entry.Entity is EntityBase);
+
+            entries
+              .Where(entry => entry.State == EntityState.Added)
+              .ToList()
+              .ForEach(entry => ((EntityBase)entry.Entity).CreatedAt = DateTime.Now);
+
+            entries
+              .ToList()
+              .ForEach(entry => ((EntityBase)entry.Entity).UpdatedAt = DateTime.Now);
+
             _context.SaveChanges();
         }
     }

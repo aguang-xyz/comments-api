@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CommentsApi.Entities
 {
-    public class PagedEntities<TEntity> where TEntity : EntityBase
+    public class PagedEntities<TEntity> where TEntity : class
     {
         public int CurrentPage { get; set; }
 

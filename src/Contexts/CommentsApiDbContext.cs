@@ -24,14 +24,23 @@ namespace CommentsApi.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // The email of user is unique.
+            modelBuilder.Entity<User>()
+              .HasIndex(user => user.Email)
+              .IsUnique();
+
             // Query comments by category order by created time desc.
-            modelBuilder.Entity<Comment>().HasIndex(comment => new { comment.Category, comment.CreatedAt });
+            modelBuilder.Entity<Comment>()
+              .HasIndex(comment => new { comment.Category, comment.CreatedAt });
 
             // Query comments by category order by the nuber of likes desc.
-            modelBuilder.Entity<Comment>().HasIndex(comment => new { comment.Category, comment.CountOfLikes });
+            modelBuilder.Entity<Comment>()
+              .HasIndex(comment => new { comment.Category, comment.CountOfLikes });
 
             // One user can only like one comment for at most one time.
-            modelBuilder.Entity<Like>().HasIndex(like => new { like.UserId, like.CommentId }).IsUnique();
+            modelBuilder.Entity<Like>()
+              .HasIndex(like => new { like.UserId, like.CommentId })
+              .IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

@@ -1,14 +1,9 @@
-using System;
-
 namespace CommentsApi.Entities
 {
-    public class Comment : EntityBase
+    public class CommentResponse
     {
-        // Publisher id.
-        public Guid UserId { get; set; }
-
-        // Category. 
-        public string Category { get; set; }
+        // Nickname.
+        public string Nickname { get; set; }
 
         // Content (markdown). 
         public string Content { get; set; }
