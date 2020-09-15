@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using static AspNet.Security.OAuth.GitHub.GitHubAuthenticationConstants;
 using CommentsApi.Entities;
 using CommentsApi.Repositories;
+using CommentsApi.Extensions;
 
 namespace CommentsApi.Services
 {
@@ -50,6 +51,9 @@ namespace CommentsApi.Services
                           .Select(claim => claim.Value)
                           .First();
 
+                        // Retrieve Gravatar url.
+                        var gravatarUrl = $"https://github.com/{name}.png";
+
                         var user = _userRepository.GetByEmail(email);
 
                         if (null == user)
@@ -58,7 +62,8 @@ namespace CommentsApi.Services
                             {
                                 Nickname = name,
                                 Email = email,
-                                GithubUrl = githubUrl
+                                GithubUrl = githubUrl,
+                                GravatarUrl = gravatarUrl
                             };
 
                             _userRepository.Insert(user);
