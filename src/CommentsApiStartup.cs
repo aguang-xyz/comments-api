@@ -43,7 +43,8 @@ namespace CommentsApi
             .AddCookie(options =>
             {
                 options.Cookie.HttpOnly = false;
-                options.Cookie.Domain = Configuration["HttpContext:Domain"];
+                options.Cookie.Domain = Configuration["HttpContext:CookieDomain"];
+                options.Cookie.SameSite = SameSiteMode.Unspecified;
             })
             .AddGitHub(options =>
             {
@@ -53,14 +54,12 @@ namespace CommentsApi
                 options.CallbackPath = "/oauth/callback/github";
 
                 options.CorrelationCookie.HttpOnly = false;
-                options.CorrelationCookie.Domain = Configuration["HttpContext:Domain"];
+                options.CorrelationCookie.Domain = Configuration["HttpContext:CookieDomain"];
                 options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.Domain = Configuration["HttpContext:Domain"];
-            });
+            // CORS policy.
+					  services.AddCors();
 
             // Controllers.
             services.AddControllers();
@@ -68,6 +67,7 @@ namespace CommentsApi
             // Repositories.
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
 
             // Http context accessor.
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
@@ -99,6 +99,15 @@ namespace CommentsApi
             });
 
             app.UseRouting();
+
+						app.UseCors(options =>
+						{
+								options
+										.WithOrigins("http://" + Configuration["HttpContext:ClientDomain"])
+										.AllowAnyMethod()
+										.AllowAnyHeader()
+										.AllowCredentials();
+						});
 
             app.UseAuthentication();
 
