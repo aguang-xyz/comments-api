@@ -8,11 +8,8 @@ namespace CommentsApi.Repositories
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        private CommentsApiDbContext _dbContext;
-
         public UserRepository(CommentsApiDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
         }
 
         public User GetByEmail(string email) =>

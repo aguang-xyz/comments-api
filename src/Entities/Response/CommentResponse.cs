@@ -5,10 +5,16 @@ namespace CommentsApi.Entities
         // Nickname.
         public string Nickname { get; set; }
 
+        // Avatar Url.
+        public string AvatarUrl { get; set; }
+
         // Content (markdown). 
         public string Content { get; set; }
 
         // Count of likes.
         public int CountOfLikes { get; set; }
+
+        // Liked.
+        public bool Liked { get; set; }
     }
 }

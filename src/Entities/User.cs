@@ -13,7 +13,7 @@ namespace CommentsApi.Entities
         // Github Url.
         public string GithubUrl { get; set; }
 
-        // Gravatar Url.
-        public string GravatarUrl { get; set; }
+        // Avatar Url.
+        public string AvatarUrl { get; set; }
     }
 }

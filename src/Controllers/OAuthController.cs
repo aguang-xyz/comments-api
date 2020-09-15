@@ -27,7 +27,7 @@ namespace CommentsApi.Controllers
                         Login("GitHub", redirectUri);
 
         [HttpGet("~/oauth/whoami")]
-        public User Whoami() => _userService.Current;
+        public WhoamiResponse Whoami() => new WhoamiResponse { User = _userService.Current };
 
         [HttpGet("~/oauth/logout")]
         public IActionResult Logout() =>

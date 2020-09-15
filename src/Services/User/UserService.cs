@@ -51,7 +51,7 @@ namespace CommentsApi.Services
                           .Select(claim => claim.Value)
                           .First();
 
-                        // Retrieve Gravatar url.
+                        // Retrieve Avatar url.
                         var gravatarUrl = $"https://github.com/{name}.png";
 
                         var user = _userRepository.GetByEmail(email);
@@ -63,7 +63,7 @@ namespace CommentsApi.Services
                                 Nickname = name,
                                 Email = email,
                                 GithubUrl = githubUrl,
-                                GravatarUrl = gravatarUrl
+                                AvatarUrl = gravatarUrl
                             };
 
                             _userRepository.Insert(user);

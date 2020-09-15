@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -26,8 +27,13 @@ namespace CommentsApi.Controllers
             [FromQuery] string category,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string order = "recent"
-        ) => _commentService.GetPaged(category, page, pageSize, order);
+            [FromQuery] string order = "recent")
+        {
+            var user = _userService.Current;
+          
+            return _commentService.GetPaged(user?.Id,
+                category, page, pageSize, order);
+        }
 
         [HttpPost]
         [Route("comments")]
@@ -41,6 +47,38 @@ namespace CommentsApi.Controllers
             }
 
             _commentService.Add(user, request.Category, request.Content);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("comments/{commentId}/likes")]
+        public IActionResult Like(Guid commentId)
+        {
+            var user = _userService.Current;
+
+            if (user == null)
+            {
+                return Forbid();
+            }
+
+            _commentService.Like(commentId, user.Id);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("comments/{commentId}/likes")]
+        public IActionResult Dislike(Guid commentId)
+        {
+            var user = _userService.Current;
+
+            if (user == null)
+            {
+                return Forbid();
+            }
+
+            _commentService.Dislike(commentId, user.Id);
 
             return Ok();
         }
