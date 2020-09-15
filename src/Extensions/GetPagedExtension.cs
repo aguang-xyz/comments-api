@@ -4,7 +4,6 @@ using CommentsApi.Entities;
 
 namespace CommentsApi.Extensions
 {
-
     public static class GetPagedExtension
     {
         public static PagedEntities<TEntity> GetPaged<TEntity>(this IQueryable<TEntity> query, int page, int pageSize) where TEntity : EntityBase
