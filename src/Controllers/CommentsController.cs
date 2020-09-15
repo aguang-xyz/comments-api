@@ -10,15 +10,12 @@ namespace CommentsApi.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private ILogger<CommentsController> _logger;
-
         private IUserService _userService;
 
         private ICommentService _commentService;
 
-        public CommentsController(ILogger<CommentsController> logger, IUserService userService, ICommentService commentService)
+        public CommentsController(IUserService userService, ICommentService commentService)
         {
-            _logger = logger;
             _userService = userService;
             _commentService = commentService;
         }
@@ -29,12 +26,8 @@ namespace CommentsApi.Controllers
             [FromQuery] string category,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string order = "recent")
-        {
-            _logger.LogInformation($"Get comments, category = {category}, page = {page}, pageSize = {pageSize}");
-
-            return _commentService.GetPaged(category, page, pageSize, order);
-        }
+            [FromQuery] string order = "recent"
+        ) => _commentService.GetPaged(category, page, pageSize, order);
 
         [HttpPost]
         [Route("comments")]
