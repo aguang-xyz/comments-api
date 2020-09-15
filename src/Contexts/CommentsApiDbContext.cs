@@ -8,19 +8,18 @@ namespace CommentsApi.Contexts
 {
     public class CommentsApiDbContext : DbContext
     {
-        private ILogger<CommentsApiDbContext> _logger;
-
         private IConfiguration _configuration;
 
-        public CommentsApiDbContext(ILogger<CommentsApiDbContext> logger, IConfiguration configuration)
+        public CommentsApiDbContext(IConfiguration configuration)
         {
-            _logger = logger;
             _configuration = configuration;
         }
 
         public DbSet<User> Users { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,8 +53,6 @@ namespace CommentsApi.Contexts
 
             // Construct the connection string;
             var connStr = $"server={server};port={port};database='{database}';user='{user}';password='{password}'";
-
-            _logger.LogInformation($"UseMySql: {connStr}");
 
             // Setup mysql configuration.
             options.UseMySql(connStr);
