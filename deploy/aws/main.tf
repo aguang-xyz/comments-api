@@ -26,25 +26,6 @@ provider "aws" {
   region  = var.aws_region
 }
 
-# Generate SSH keys locally.
-resource "null_resource" "generate_ssh_keys" {
-  provisioner "local-exec" {
-    command = "./scripts/generate-ssh-keys"
-  }
-}
-
-# The local file "keys/ec2".
-data "local_file" "ec2_private_key" {
-  filename   = "./keys/ec2"
-  depends_on = [null_resource.generate_ssh_keys]
-}
-
-# The local file "keys/ec2.pub".
-data "local_file" "ec2_public_key" {
-  filename   = "./keys/ec2.pub"
-  depends_on = [null_resource.generate_ssh_keys]
-}
-
 # Randomly generate a string as the RDS password.
 resource "random_string" "rds_password" {
   length = 16
@@ -104,6 +85,40 @@ resource "null_resource" "build_project" {
       RDS_PASSWORD    = aws_db_instance.rds.password
     }
   }
+}
+
+# Execute database migrations.
+resource "null_resource" "execute_migrations" {
+  provisioner "local-exec" {
+    command = "./scripts/execute-migrations"
+
+    environment = {
+      APP_ENVIRONMENT = var.app_environment
+    }
+  }
+
+  depends_on = [
+    null_resource.build_project
+  ]
+}
+
+# Generate SSH keys locally.
+resource "null_resource" "generate_ssh_keys" {
+  provisioner "local-exec" {
+    command = "./scripts/generate-ssh-keys"
+  }
+}
+
+# The local file "keys/ec2".
+data "local_file" "ec2_private_key" {
+  filename   = "./keys/ec2"
+  depends_on = [null_resource.generate_ssh_keys]
+}
+
+# The local file "keys/ec2.pub".
+data "local_file" "ec2_public_key" {
+  filename   = "./keys/ec2.pub"
+  depends_on = [null_resource.generate_ssh_keys]
 }
 
 # Create the AWS SSH key pair for EC2 instances.
@@ -180,22 +195,6 @@ resource "aws_instance" "ec2" {
   }
 
   # Deploy instances after the app settings and binaries have been built.
-  depends_on = [
-    null_resource.build_project
-  ]
-}
-
-# Execute database migrations.
-resource "null_resource" "execute_migrations" {
-  provisioner "local-exec" {
-    command = "./scripts/execute-migrations"
-
-    environment = {
-      APP_ENVIRONMENT = var.app_environment
-    }
-  }
-
-  # 
   depends_on = [
     null_resource.build_project
   ]
