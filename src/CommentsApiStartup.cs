@@ -32,6 +32,9 @@ namespace CommentsApi
             // Database context.
             services.AddDbContext<CommentsApiDbContext>();
 
+            // Http context accessor.
+            services.AddHttpContextAccessor();
+
             // Routing.
             services.AddRouting();
 
@@ -68,9 +71,6 @@ namespace CommentsApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
-
-            // Http context accessor.
-            services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
             // Services.
             services.AddScoped<IUserService, UserService>();
