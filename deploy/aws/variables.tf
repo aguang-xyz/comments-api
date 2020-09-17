@@ -9,7 +9,7 @@ variable "aws_amis" {
 }
 
 variable "aws_instances" {
-  default = 2
+  default = 1
 }
 
 variable "app_environment" {
