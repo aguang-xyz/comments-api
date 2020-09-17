@@ -83,6 +83,8 @@ resource "null_resource" "build_project" {
       RDS_DATABASE    = aws_db_instance.rds.name
       RDS_USERNAME    = aws_db_instance.rds.username
       RDS_PASSWORD    = aws_db_instance.rds.password
+      APP_DOMAIN      = var.app_domain
+      API_DOMAIN      = var.api_domain
     }
   }
 }
@@ -141,8 +143,8 @@ resource "aws_security_group" "ec2" {
 
   ingress {
     description = "HTTP"
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -189,7 +191,7 @@ resource "aws_instance" "ec2" {
       "sudo apt update",
       "sudo apt install -y dotnet-sdk-3.1 aspnetcore-runtime-3.1",
       "sudo chmod +x ~/comments-api/CommentsApi",
-      "cd ~/comments-api && (ASPNETCORE_ENVIRONMENT=${var.app_environment} nohup ~/comments-api/CommentsApi > ~/comments-api.log &)",
+      "cd ~/comments-api && (sudo ASPNETCORE_ENVIRONMENT=${var.app_environment} nohup ~/comments-api/CommentsApi > ~/comments-api.log &)",
       "sleep 5"
     ]
   }
@@ -200,16 +202,66 @@ resource "aws_instance" "ec2" {
   ]
 }
 
+# Create a security group for the ELB instance.
+resource "aws_security_group" "elb" {
+  description = "Allow MySQL traffic"
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # Create a ELB instance.
 resource "aws_elb" "elb" {
   availability_zones = aws_instance.ec2.*.availability_zone
 
   listener {
-    instance_port     = 8080
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
+    instance_port      = 80
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = var.aws_ssl_cert_id
   }
 
   instances = aws_instance.ec2.*.id
+
+  security_groups = [
+    aws_security_group.elb.id
+  ]
+}
+
+# Create a ELB cookie stickness policy.
+resource "aws_lb_cookie_stickiness_policy" "elb" {
+  name                     = "stickiness-policy"
+  load_balancer            = aws_elb.elb.id
+  lb_port                  = 443
+  cookie_expiration_period = 3600
+}
+
+# Setup route53 recourd.
+resource "aws_route53_record" "www" {
+  zone_id = var.route53_zone_id
+  name    = var.api_domain
+  type    = "CNAME"
+  ttl     = "60"
+  records = [aws_elb.elb.dns_name]
 }

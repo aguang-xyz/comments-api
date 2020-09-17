@@ -21,7 +21,7 @@ namespace CommentsApi
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<CommentsApiStartup>();
-                webBuilder.UseUrls("http://*:8080/");
+                webBuilder.UseUrls("http://*/");
             });
     }
 }

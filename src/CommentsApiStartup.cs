@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -62,7 +63,7 @@ namespace CommentsApi
             });
 
             // CORS policy.
-					  services.AddCors();
+            services.AddCors();
 
             // Controllers.
             services.AddControllers();
@@ -91,6 +92,11 @@ namespace CommentsApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+            });
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -100,14 +106,13 @@ namespace CommentsApi
 
             app.UseRouting();
 
-						app.UseCors(options =>
-						{
-								options
-										.WithOrigins("http://" + Configuration["HttpContext:ClientDomain"])
-										.AllowAnyMethod()
-										.AllowAnyHeader()
-										.AllowCredentials();
-						});
+            app.UseCors(options =>
+            {
+                options.WithOrigins("http://" + Configuration["HttpContext:ClientDomain"])
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            });
 
             app.UseAuthentication();
 

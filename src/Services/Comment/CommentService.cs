@@ -13,7 +13,7 @@ namespace CommentsApi.Services
         private CommentsApiDbContext _dbContext;
 
         private IUserRepository _userRepository;
-        
+
         private ICommentRepository _commentRepository;
 
         private ILikeRepository _likeRepository;
@@ -70,7 +70,7 @@ namespace CommentsApi.Services
                   .GetByCommentIdsAndUserId(commentIds, userId.Value)
                   .Select(like => like.CommentId)
                   .Distinct() :
-              new Guid[] {};
+              new Guid[] { };
 
             var entities = pagedComments.Entities
                 .Select(comment => new CommentResponse
@@ -101,15 +101,16 @@ namespace CommentsApi.Services
             {
                 // Retrive the user or throw an exception.
                 var comment = _dbContext.Comments.FromSqlRaw("SELECT * FROM `Comments` WHERE `Id` = {0}", commentId).Single();
-          
+
                 // If there already exist a like record, return directly. 
                 if (null != _likeRepository.GetByCommentIdAndUserId(commentId, userId))
                 {
-                    return;    
+                    return;
                 }
 
                 // Try to insert like record.
-                _likeRepository.Insert(new Like {
+                _likeRepository.Insert(new Like
+                {
                     UserId = userId,
                     CommentId = commentId
                 });
@@ -131,13 +132,13 @@ namespace CommentsApi.Services
             {
                 // Retrive the user or throw an exception.
                 var comment = _dbContext.Comments.FromSqlRaw("SELECT * FROM `Comments` WHERE `Id` = {0}", commentId).Single();
-          
+
                 var like = _likeRepository.GetByCommentIdAndUserId(commentId, userId);
 
                 // If there does not exist a like record, return directly. 
                 if (null == like)
                 {
-                    return;    
+                    return;
                 }
 
                 // Try to insert like record.

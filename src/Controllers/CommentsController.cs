@@ -30,7 +30,7 @@ namespace CommentsApi.Controllers
             [FromQuery] string order = "recent")
         {
             var user = _userService.Current;
-          
+
             return _commentService.GetPaged(user?.Id,
                 category, page, pageSize, order);
         }

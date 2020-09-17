@@ -8,6 +8,10 @@ $(cat <<EOF > ../../src/appsettings.${APP_ENVIRONMENT}.json
     "Port": "${RDS_PORT}",
     "User": "${RDS_USERNAME}",
     "Password": "${RDS_PASSWORD}"
+  },
+  "HttpContext": {
+    "CookieDomain": ".${APP_DOMAIN}",
+    "ClientDomain": "${API_DOMAIN}"
   }
 }
 EOF
