@@ -48,7 +48,7 @@ namespace CommentsApi
             {
                 options.Cookie.HttpOnly = false;
                 options.Cookie.Domain = Configuration["HttpContext:CookieDomain"];
-                options.Cookie.SameSite = SameSiteMode.Unspecified;
+                options.Cookie.SameSite = SameSiteMode.None;
             })
             .AddGitHub(options =>
             {
@@ -59,7 +59,7 @@ namespace CommentsApi
 
                 options.CorrelationCookie.HttpOnly = false;
                 options.CorrelationCookie.Domain = Configuration["HttpContext:CookieDomain"];
-                options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
+                options.CorrelationCookie.SameSite = SameSiteMode.None;
             });
 
             // CORS policy.
