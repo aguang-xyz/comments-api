@@ -75,11 +75,13 @@ namespace CommentsApi.Services
             var entities = pagedComments.Entities
                 .Select(comment => new CommentResponse
                 {
+                    Id = comment.Id,
                     Nickname = users[comment.UserId].Nickname,
                     AvatarUrl = users[comment.UserId].AvatarUrl,
                     Content = comment.Content,
                     CountOfLikes = comment.CountOfLikes,
-                    Liked = likedCommentIds.Contains(comment.Id)
+                    Liked = likedCommentIds.Contains(comment.Id),
+                    CreatedAt = comment.CreatedAt,
                 })
                 .ToList();
 

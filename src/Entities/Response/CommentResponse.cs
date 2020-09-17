@@ -1,7 +1,12 @@
+using System;
+
 namespace CommentsApi.Entities
 {
     public class CommentResponse
     {
+        // Comment id.
+        public Guid Id { get; set; }
+
         // Nickname.
         public string Nickname { get; set; }
 
@@ -16,5 +21,8 @@ namespace CommentsApi.Entities
 
         // Liked.
         public bool Liked { get; set; }
+
+        // Created at.
+        public DateTime CreatedAt { get; set; }
     }
 }
