@@ -108,7 +108,8 @@ namespace CommentsApi
 
             app.UseCors(options =>
             {
-                options.WithOrigins("http://" + Configuration["HttpContext:ClientDomain"])
+                options.WithOrigins("https://" + Configuration["HttpContext:ClientDomain"], 
+                                    "http://" + Configuration["HttpContext:ClientDomain"])
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();
