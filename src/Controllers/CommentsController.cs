@@ -8,6 +8,9 @@ using CommentsApi.Services;
 
 namespace CommentsApi.Controllers
 {
+    /// <summary>
+    /// Authentication related APIs.
+    /// </summary>
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -21,6 +24,9 @@ namespace CommentsApi.Controllers
             _commentService = commentService;
         }
 
+        /// <summary>
+        /// Fetch comments.
+        /// </summary>
         [HttpGet]
         [Route("comments")]
         public PagedEntities<CommentResponse> GetComments(
@@ -35,6 +41,9 @@ namespace CommentsApi.Controllers
                 category, page, pageSize, order);
         }
 
+        /// <summary>
+        /// Submit new comment.
+        /// </summary>
         [HttpPost]
         [Route("comments")]
         public IActionResult AddComment(AddCommentRequest request)
@@ -51,6 +60,9 @@ namespace CommentsApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Like a comment.
+        /// </summary>
         [HttpPost]
         [Route("comments/{commentId}/likes")]
         public IActionResult Like(Guid commentId)
@@ -67,6 +79,9 @@ namespace CommentsApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Dislike a comment.
+        /// </summary>
         [HttpDelete]
         [Route("comments/{commentId}/likes")]
         public IActionResult Dislike(Guid commentId)

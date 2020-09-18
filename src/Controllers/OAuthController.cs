@@ -22,13 +22,22 @@ namespace CommentsApi.Controllers
         private IActionResult Login(string provider, string redirectUri) =>
       Challenge(new AuthenticationProperties { RedirectUri = redirectUri }, provider);
 
+        /// <summary>
+        /// Login via Github.
+        /// </summary>
         [HttpGet("~/oauth/login/github")]
         public IActionResult LoginGitHub([FromQuery] string redirectUri = "/") =>
                         Login("GitHub", redirectUri);
 
+        /// <summary>
+        /// Get current oauth status.
+        /// </summary>
         [HttpGet("~/oauth/whoami")]
         public WhoamiResponse Whoami() => new WhoamiResponse { User = _userService.Current };
 
+        /// <summary>
+        /// Logout.
+        /// </summary>
         [HttpGet("~/oauth/logout")]
         public IActionResult Logout() =>
                         SignOut(new AuthenticationProperties { RedirectUri = "/" },
