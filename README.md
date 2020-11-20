@@ -2,9 +2,10 @@
 
 Yet another API server which provides "Disqus like" comment funnction for [my blog](https://aguang.xyz) written in ASP.NET Core .
 
-## Status
+## Documents.
 
-Developing.
+See [swagger](https://comments-api.aguang.xyz/swagger/index.html).
+
 
 ## Deployment on AWS platform
 
