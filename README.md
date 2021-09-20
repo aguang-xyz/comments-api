@@ -1,11 +1,6 @@
-# Comments-Api
+# Comments API
 
-Yet another API server which provides "Disqus like" comment funnction for [my blog](https://aguang.xyz) written in ASP.NET Core .
-
-## Documents.
-
-See [swagger](https://comments-api.aguang.xyz/swagger/index.html).
-
+Yet another API server which provides "Disqus like" comment funnction written in ASP.NET Core.
 
 ## Deployment on AWS platform
 
